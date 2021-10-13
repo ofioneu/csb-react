@@ -1,0 +1,41 @@
+.conteiner {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+
+.site-card-border-less-wrapper {
+    padding: 10px;
+    background: #1D4061;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+.card{
+    width: 320px;
+    height: 340px;
+    background: #005AAD;
+    color: #fff;
+}
+
+.ant-card-head-title {
+display: inline-block;
+flex: 1 1;
+padding: 16px 0;
+overflow: hidden;
+white-space: nowrap;
+text-overflow: ellipsis;
+color: #fff;
+}
