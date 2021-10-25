@@ -1,4 +1,4 @@
-import "./comissao.css";
+import './importacao.css'
 import React, { useState } from "react";
 import {
   Button,
@@ -13,7 +13,6 @@ import {
 import { SearchOutlined } from "@ant-design/icons";
 
 import firebase from "../../firebaseConnection";
-import GraficComissao from "../../Components/Grafics";
 import NumberFormat from "react-number-format";
 import moment from "moment";
 import { toast } from "react-toastify";
@@ -21,8 +20,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Comissao() {
-  const dateFormat = "MM/YYYY";
+  const dateFormat = "DD/MM/YYYY";
   const db = firebase.firestore();
+  const { RangePicker } = DatePicker;
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [response, setResponse] = useState([]);
@@ -68,9 +68,10 @@ export default function Comissao() {
   }
 
   async function toFind(fieldValue) {
-    const hono = db.collection("honorarios");
+    console.log(fieldValue)
+    const hono = db.collection("importacao");
     await hono
-      .where("data", "==", fieldValue)
+      .where('data' <= '01/08/2021').where('data' >= '25/10/2021')
       .get()
       .then((snapshot) => {
         let lista = [];
@@ -97,36 +98,36 @@ export default function Comissao() {
   return (
     <div>
       <Row>
-        <Col span={12} id="comisaao-form">
+        <Col span={12} id="importacao-form">
           <Form onFinish={gravar} form={form} {...layout}>
             <Form.Item
-              label="R$ Pagamento"
-              name="pagamento"
+              label="R$ Custo"
+              name="custo"
               rules={[
                 {
                   required: true,
-                  message: "Por favor, ensira o valor do pagamento!",
+                  message: "Por favor, ensira o valor do custo!",
                 },
               ]}
             >
               <NumberFormat
-                id="input-pagamento"
+                id="input-custo"
                 thousandSeparator={true}
-                className="input-moeda"
+                className="input-custo"
               />
             </Form.Item>
 
             <Form.Item
-              label="R$ Comissao"
-              name="comissao"
+              label="R$ Dolar"
+              name="dolar"
               rules={[
                 {
                   required: true,
-                  message: "Por favor, ensira o valor da comissão!",
+                  message: "Por favor, ensira o valor do dolar!",
                 },
               ]}
             >
-              <NumberFormat thousandSeparator={true} id="input-comissao" />
+              <NumberFormat thousandSeparator={true} id="input-dolar" />
             </Form.Item>
             
             <Form.Item
@@ -135,21 +136,11 @@ export default function Comissao() {
               rules={[
                 {
                   required: false,
-                  message: "Por favor, ensira o mês!",
+                  message: "Por favor, ensira a data!",
                 },
               ]}
             >
-              <Input.Group>
-              <DatePicker id="input-data"  picker='month' format={dateFormat} /> 
-              <Button
-                  className="search"
-                  shape="circle"
-                  icon={<SearchOutlined />}
-                  size="large"
-                  onClick={getValue}
-                  htmlType='button'
-                />
-              </Input.Group> 
+              <DatePicker   format={dateFormat} /> 
             </Form.Item>
 
            
@@ -169,9 +160,20 @@ export default function Comissao() {
               </Button>
             </div>
           </Form>
+            <div>
+          <RangePicker id="input-data" />
+          <Button
+                  className="search"
+                  shape="circle"
+                  icon={<SearchOutlined />}
+                  size="large"
+                  onClick={getValue}
+                  htmlType='button'
+                />
+            </div>
         </Col>
         <Col span={12}>
-          <GraficComissao />
+          <h1>Calculadora de importação aqui</h1>
         </Col>
       </Row>
 
@@ -189,10 +191,10 @@ export default function Comissao() {
         response.map((res) => {
           return(
             <li key={res.id}>
-              <span>Pagamento: {res.pagamento} </span> <br />
+              <span>custo: {res.custo} </span> <br />
+              <span>Dolar: {res.dolar} </span> <br /> <br />
               <span>Data: {res.data} </span> <br />
-              <span>Comentario: {res.comentario} </span> <br />
-              <span>Comissão: {res.comissao} </span> <br /> <br />
+              <span>Comentario: {res.comentario} </span> <br />              
             </li>       
           )
         })}

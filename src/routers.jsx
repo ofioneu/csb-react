@@ -1,7 +1,7 @@
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import HeaderPages from './Components/Headers';
 import Home from './Pages/Home'
-import Frete from './Pages/Frete';
+import Importacao from './Pages/Importacao';
 import Comissao from './Pages/Comissao';
 
 
@@ -12,7 +12,7 @@ const Routes = () => {
         <HeaderPages/> 
             <Switch>
                 <Route exact path='/' component={Home}/>
-                <Route exact path='/frete' component={Frete}/>
+                <Route exact path='/importacao' component={Importacao}/>
                 <Route exact path='/comissao' component={Comissao}/>
             </Switch>
         </BrowserRouter>

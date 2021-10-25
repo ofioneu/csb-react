@@ -1,0 +1,29 @@
+/* @import 'https://code.highcharts.com/css/highcharts.css'; */
+
+.highcharts-color-0 {
+    fill: #ffffff;
+    stroke: #1D4061;
+}
+
+.highcharts-point {
+    stroke-width: 1px;
+    fill: #ffffff;
+}
+
+.highcharts-point highcharts-color-0{
+    stroke-width: 1px;
+    fill: #ffffff;
+}
+
+.highcharts-background {
+    fill: #1D4061;
+}
+
+.highcharts-plot-border, .highcharts-plot-background {
+    fill: #1D4061;
+}
+
+.highcharts-legend-box{
+   fill: #ffffff;
+   width: auto;
+}

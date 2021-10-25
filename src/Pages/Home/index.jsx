@@ -1,12 +1,13 @@
 import React from 'react'
-import { Card } from 'antd';
+import { Card, Button, Row, Col, Space } from 'antd';
 import './home.css'
 
 
 export default function Home(){
 
     return(
-        <div className = 'conteiner'>
+            <Row>
+                <Col span={12}>
             <div className="site-card-border-less-wrapper">
                 <Card className = 'card' title="Dados Bancarios Serviços" bordered={true}>
                     <p>Dados Bancários: Banco do Brasil </p>
@@ -41,8 +42,39 @@ export default function Home(){
                     <p>TRABALHO REALIZADO POR UM ENGENHEIRO MECANICO ESPECIALIZADO EM MANUTENÇÃO E TREINAMENTOS
                         EM EQUIPAMENTOS DAS MARCAS CARRIER , TRAINE E YORK.CREA: 5063881498</p>
                 </Card>
-            </div>             
-        </div>
+                
+            </div>
+            </Col>
+            
+            <Col span={12}>
+            <Space  direction="vertical">
+            <Card className='card' title='Forncedores'>
+            <Button type='link'  href='https://www.chillerpecas.com.br/' target='_blank' >Chiller Peças</Button>
+            <Button type='link' href='https://siberianopecas.com.br/' target='_blank'>Siberiano</Button>
+            <Button type='link' href='https://qualipecas.com.br/' target='_blank'>Qualipeças</Button>
+            </Card>
+            </Space>
+            <Space  direction="vertical">
+            <Card className='card' title='DHL'>
+            <Button type='link'  href='https://mydhl.express.dhl/br/pt/auth/login.html' target='_blank' >DHL EXPRESS</Button>
+            <Button type='link' href='https://mybill.dhl.com/login/?next=/dashboard/' target='_blank'>MYBILL</Button>
+            </Card>
+            </Space>
+            <Space  direction="vertical">
+            <Card className='card' title='FISCAL'>
+            <Button type='link'  href='http://www.sintegra.gov.br/' target='_blank' >SINTEGRA</Button>
+            <Button type='link' href='https://hortolandia.ginfes.com.br/' target='_blank'>NF-e SERVIÇO</Button>
+            <Button type='link' href='https://www.leitorxml.com/#' target='_blank'>XML READER</Button>
+            </Card>
+            </Space>
+            <Space  direction="vertical">
+            <Card className='card' title='Email'>
+            <Button type='link'  href='https://webmail1.hostinger.com.br/?_task=logout&_token=L2I6DvEPB1GsgQ2gQhMMOINrmKZKbiGJ' target='_blank' >EMAIL</Button>
+            </Card>
+            </Space>
+            </Col>
+            
+            </Row> 
         
     )    
 }

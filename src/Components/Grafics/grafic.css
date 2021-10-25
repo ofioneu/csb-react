@@ -1,0 +1,58 @@
+/* @import 'https://code.highcharts.com/css/highcharts.css'; */
+
+.highcharts-color-0 {
+    fill:#1C1B6E;
+    stroke: #ffffff;
+}
+
+.highcharts-axis-labels{
+    fill: #ffffff;
+}
+
+
+
+.highcharts-point {
+    stroke-width: 1px;
+    
+}
+
+.highcharts-point highcharts-color-0{
+    stroke-width: 1px;
+    fill: #ffffff;
+}
+
+.highcharts-axis-title{
+    fill: #ffffff; 
+    font-weight: bold;
+}
+.highcharts-subtitle{
+    fill: #ffffff; 
+}
+.highcharts-legend highcharts-no-tooltip{
+    fill: #ffffff;
+
+}
+
+.highcharts-title{
+    fill: #ffffff; 
+    font-weight: bold;
+}
+
+.highcharts-background {
+    fill: #1D4061;
+}
+
+.highcharts-plot-border, .highcharts-plot-background {
+    fill: #1D4061;
+}
+
+.highcharts-legend-box{
+   fill: #ffffff;
+   width: auto;
+}
+
+
+.highcharts-point {
+    stroke-width: 1px;
+    fill: #1C1B6E;
+}

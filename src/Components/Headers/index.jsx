@@ -10,24 +10,20 @@ const HeaderPages = () => {
 
   const [moeda, setMoeda] = useState([])
 
-  useEffect(()=>{
+  async function loadMoeda(){
+    const response = await api.get('last/USD-BRL')
+    setMoeda(response.data.USDBRL);
+    
+}
 
-    async function loadMoeda(){
-      const response = await api.get('last/BTC-BRL')
-      setMoeda(response.data.BTCBRL);
-      
-  }
-  loadMoeda();
-  },[moeda])
+  useEffect(()=>{ 
+  setInterval(()=>{    
+    return loadMoeda()      
+  },30000)
+  },[])
 
-  // async function loadMoedaUpdate(){
-  //   const response = await api.get('last/BTC-BRL')
-  //     setMoeda(response.data.BTCBRL);
-  // }
 
-  // // setInterval(()=>{    
-  // //   return loadMoedaUpdate()      
-  // // },30*1000)
+ 
 
 
     return( 
@@ -48,7 +44,7 @@ const HeaderPages = () => {
               <Link className='link-menu' to='/'>Home</Link>
             </Menu.Item>
             <Menu.Item className = 'menu-item' key="2">
-              <Link to='/frete'>Frete</Link>
+              <Link to='/importacao'>Importacao</Link>
             </Menu.Item>
             <Menu.Item className = 'menu-item' key="3">
               <Link to='/comissao'>Comissão</Link>
