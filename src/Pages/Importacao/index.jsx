@@ -1,14 +1,6 @@
-import './importacao.css'
+import "./importacao.css";
 import React, { useState } from "react";
-import {
-  Button,
-  Form,
-  Input,
-  DatePicker,
-  Modal,
-  Row,
-  Col,
-} from "antd";
+import { Button, Form, Input, DatePicker, Modal, Row, Col } from "antd";
 
 import { SearchOutlined } from "@ant-design/icons";
 
@@ -25,7 +17,9 @@ export default function Comissao() {
   const { RangePicker } = DatePicker;
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [dateRangePicker, setDateRangePicker] = useState({});
   const [response, setResponse] = useState([]);
+  
 
   const layout = {
     labelCol: {
@@ -38,16 +32,19 @@ export default function Comissao() {
 
   const gravar = (fieldsValue) => {
     async function handleAdd() {
-      if(fieldsValue.comentario==null || fieldsValue.comentario===undefined){
-        fieldsValue.comentario = ''
+      if (
+        fieldsValue.comentario == null ||
+        fieldsValue.comentario === undefined
+      ) {
+        fieldsValue.comentario = "";
       }
       await firebase
         .firestore()
-        .collection("honorarios")
+        .collection("importacao")
         .add({
-          pagamento: fieldsValue.pagamento,
-          comissao: fieldsValue.comissao,
-          data: moment(fieldsValue.datePicker).format("MM/YYYY"),
+          custo: fieldsValue.custo,
+          dolar: fieldsValue.dolar,
+          data: moment(fieldsValue.data).format("MM/YYYY"),
           comentario: fieldsValue.comentario,
         })
         .then(() => {
@@ -61,35 +58,41 @@ export default function Comissao() {
     form.resetFields();
   };
 
-  function getValue() {
-    const data = document.getElementById("input-data").value;
-        toFind(data);
-    
+  function rangeDate(range){
+    let startDate = range[0].format(dateFormat);
+    let endDate = range[1].format(dateFormat);
+    console.log(startDate)
+    setDateRangePicker({start: startDate, end: endDate})
+    toFind(dateRangePicker)
+    form.resetFields();
   }
 
-  async function toFind(fieldValue) {
-    console.log(fieldValue)
-    const hono = db.collection("importacao");
-    await hono
-      .where('data' <= '01/08/2021').where('data' >= '25/10/2021')
-      .get()
-      .then((snapshot) => {
-        let lista = [];
+  async function toFind(value) {
+    console.log("fields", value);
+    const importacao = db.collection("importacao");
+    console.log('value: ',importacao)
+    // await importacao
+    //   .where("data" <= "01/08/2021")
+    //   .where("data" >= "25/10/2021")
+    //   .get()
+    //   .then((snapshot) => {
+    //     let lista = [];
 
-        snapshot.forEach((doc) => {
-          lista.push({
-            id: doc.id,
-            pagamento: doc.data().pagamento,
-            data: doc.data().data,
-            comissao: doc.data().comissao,
-            comentario: doc.data().comentario,
-          });
-        });
+    //     snapshot.forEach((doc) => {
+    //       lista.push({
+    //         id: doc.id,
+    //         custo: doc.data().custo,
+    //         dolar: doc.data().dolar,
+    //         data: doc.data().data,
+    //         comentario: doc.data().comentario,
+    //       });
+    //     });
+    //     console.log("Lista", lista);
 
-        setResponse(lista)
-        setIsModalVisible(true);
-        form.resetFields();
-      });
+    //     setResponse(lista);
+    //     setIsModalVisible(true);
+    //     form.resetFields();
+    //   });
   }
 
   const handleOk = () => {
@@ -129,7 +132,7 @@ export default function Comissao() {
             >
               <NumberFormat thousandSeparator={true} id="input-dolar" />
             </Form.Item>
-            
+
             <Form.Item
               label="data"
               name="data"
@@ -140,17 +143,13 @@ export default function Comissao() {
                 },
               ]}
             >
-              <DatePicker   format={dateFormat} /> 
+              <DatePicker format={dateFormat} />
             </Form.Item>
 
-           
-             
             <Form.Item
               label="Comentario"
               name="comentario"
-              rules={[
-                { required: false },
-              ]}
+              rules={[{ required: false }]}
             >
               <Input.TextArea id="input-comentario" />
             </Form.Item>
@@ -160,17 +159,20 @@ export default function Comissao() {
               </Button>
             </div>
           </Form>
-            <div>
-          <RangePicker id="input-data" />
-          <Button
-                  className="search"
-                  shape="circle"
-                  icon={<SearchOutlined />}
-                  size="large"
-                  onClick={getValue}
-                  htmlType='button'
-                />
-            </div>
+
+          <Form form={form}>
+            <Form.Item>
+              <RangePicker onChange={rangeDate} />
+            </Form.Item>
+              <Button
+                className="search"
+                shape="circle"
+                icon={<SearchOutlined />}
+                size="large"
+                // onClick={getValue}
+                htmlType="button"
+              />
+          </Form>
         </Col>
         <Col span={12}>
           <h1>Calculadora de importação aqui</h1>
@@ -181,26 +183,24 @@ export default function Comissao() {
         title="Resultado"
         visible={isModalVisible}
         footer={
-        <Button key="submit" type="primary" onClick={handleOk}>
-        Ok
-        </Button>
+          <Button key="submit" type="primary" onClick={handleOk}>
+            Ok
+          </Button>
         }
       >
-          <ol>  
-        {    
-        response.map((res) => {
-          return(
-            <li key={res.id}>
-              <span>custo: {res.custo} </span> <br />
-              <span>Dolar: {res.dolar} </span> <br /> <br />
-              <span>Data: {res.data} </span> <br />
-              <span>Comentario: {res.comentario} </span> <br />              
-            </li>       
-          )
-        })}
-      </ol>
+        <ol>
+          {response.map((res) => {
+            return (
+              <li key={res.id}>
+                <span>custo: {res.custo} </span> <br />
+                <span>Dolar: {res.dolar} </span> <br /> <br />
+                <span>Data: {res.data} </span> <br />
+                <span>Comentario: {res.comentario} </span> <br />
+              </li>
+            );
+          })}
+        </ol>
       </Modal>
-  
     </div>
   );
 }
