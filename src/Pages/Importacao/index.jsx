@@ -29,70 +29,65 @@ export default function Comissao() {
       span: 16,
     },
   };
-
-  const gravar = (fieldsValue) => {
-    async function handleAdd() {
-      if (
-        fieldsValue.comentario == null ||
-        fieldsValue.comentario === undefined
-      ) {
-        fieldsValue.comentario = "";
+    
+    async function handleAdd(fieldsValue) {
+      if(fieldsValue['comentario']==null || fieldsValue['comentario']===undefined){
+        fieldsValue['comentario'] = 'vazio'
       }
-      await firebase
+      console.log('fields: ', fieldsValue)
+        await firebase
         .firestore()
         .collection("importacao")
         .add({
           custo: fieldsValue.custo,
           dolar: fieldsValue.dolar,
-          data: moment(fieldsValue.data).format("MM/YYYY"),
+          data: moment(fieldsValue.data).format("DD/MM/YYYY"),
           comentario: fieldsValue.comentario,
         })
         .then(() => {
           toast.success("DADOS CADASTRADO COM SUCESSO!");
+          form.resetFields();
         })
         .catch((error) => {
           toast.error("GEROU ALGUM ERRO!");
         });
     }
-    handleAdd();
-    form.resetFields();
-  };
+    
+  
 
   function rangeDate(range){
     let startDate = range[0].format(dateFormat);
     let endDate = range[1].format(dateFormat);
-    console.log(startDate)
     setDateRangePicker({start: startDate, end: endDate})
-    toFind(dateRangePicker)
-    form.resetFields();
   }
 
-  async function toFind(value) {
-    console.log("fields", value);
+  async function toFind() {
+    console.log("start", dateRangePicker.start);
+    console.log("end", dateRangePicker.end);
     const importacao = db.collection("importacao");
-    console.log('value: ',importacao)
-    // await importacao
-    //   .where("data" <= "01/08/2021")
-    //   .where("data" >= "25/10/2021")
-    //   .get()
-    //   .then((snapshot) => {
-    //     let lista = [];
+     await importacao
+      .where("data", '<=', dateRangePicker.start)
+      .where("data", '>=', dateRangePicker.end)
+      .get()
+      .then((snapshot) => {
+        console.log(snapshot)
+        let lista = [];
 
-    //     snapshot.forEach((doc) => {
-    //       lista.push({
-    //         id: doc.id,
-    //         custo: doc.data().custo,
-    //         dolar: doc.data().dolar,
-    //         data: doc.data().data,
-    //         comentario: doc.data().comentario,
-    //       });
-    //     });
-    //     console.log("Lista", lista);
+        snapshot.forEach((doc) => {
+          lista.push({
+            id: doc.id,
+            custo: doc.data().custo,
+            dolar: doc.data().dolar,
+            data: doc.data().data,
+            comentario: doc.data().comentario,
+          });
+        });
+        console.log("Lista", lista);
 
-    //     setResponse(lista);
-    //     setIsModalVisible(true);
-    //     form.resetFields();
-    //   });
+        setResponse(lista);
+        setIsModalVisible(true);
+        form.resetFields();
+      });
   }
 
   const handleOk = () => {
@@ -102,7 +97,7 @@ export default function Comissao() {
     <div>
       <Row>
         <Col span={12} id="importacao-form">
-          <Form onFinish={gravar} form={form} {...layout}>
+          <Form onFinish={handleAdd} form={form} {...layout}>
             <Form.Item
               label="R$ Custo"
               name="custo"
@@ -159,25 +154,24 @@ export default function Comissao() {
               </Button>
             </div>
           </Form>
+        </Col>
+        <Col span={12}>
+          <h1>Calculadora de importação aqui</h1>
+        </Col>
+      </Row>
 
-          <Form form={form}>
+      <Form onFinish={toFind}>
             <Form.Item>
-              <RangePicker onChange={rangeDate} />
+              <RangePicker onChange={rangeDate} format={dateFormat}/>
             </Form.Item>
               <Button
                 className="search"
                 shape="circle"
                 icon={<SearchOutlined />}
                 size="large"
-                // onClick={getValue}
-                htmlType="button"
+                htmlType="submit"
               />
           </Form>
-        </Col>
-        <Col span={12}>
-          <h1>Calculadora de importação aqui</h1>
-        </Col>
-      </Row>
 
       <Modal
         title="Resultado"
