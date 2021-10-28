@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Comissao() {
-  const dateFormat = "DD/MM/YYYY";
+  const dateFormat = "YYYY/MM/DD";
   const db = firebase.firestore();
   const { RangePicker } = DatePicker;
   const [form] = Form.useForm();
@@ -41,7 +41,7 @@ export default function Comissao() {
         .add({
           custo: fieldsValue.custo,
           dolar: fieldsValue.dolar,
-          data: moment(fieldsValue.data).format("DD/MM/YYYY"),
+          data: moment(fieldsValue.data).format(dateFormat),
           comentario: fieldsValue.comentario,
         })
         .then(() => {
@@ -66,10 +66,14 @@ export default function Comissao() {
     console.log("end", dateRangePicker.end);
     const importacao = db.collection("importacao");
      await importacao
-      .where("data", '<=', dateRangePicker.start)
-      .where("data", '>=', dateRangePicker.end)
+      .where("data", '>=', dateRangePicker.start)
+      .where("data", '<=', dateRangePicker.end)
       .get()
       .then((snapshot) => {
+        if (snapshot.empty) {
+          toast.error('No matching documents.');
+          return;
+        }
         console.log(snapshot)
         let lista = [];
 
@@ -85,6 +89,7 @@ export default function Comissao() {
         console.log("Lista", lista);
 
         setResponse(lista);
+        lista=[]
         setIsModalVisible(true);
         form.resetFields();
       });
@@ -187,7 +192,7 @@ export default function Comissao() {
             return (
               <li key={res.id}>
                 <span>custo: {res.custo} </span> <br />
-                <span>Dolar: {res.dolar} </span> <br /> <br />
+                <span>Dolar: {res.dolar} </span> <br />
                 <span>Data: {res.data} </span> <br />
                 <span>Comentario: {res.comentario} </span> <br />
               </li>
