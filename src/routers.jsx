@@ -2,7 +2,7 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import HeaderPages from './Components/Headers';
 import Home from './Pages/Home'
 import Importacao from './Pages/Importacao';
-import Comissao from './Pages/Comissao';
+import Honorarios from './Pages/Honorarios';
 
 
 const Routes = () => {
@@ -13,7 +13,7 @@ const Routes = () => {
             <Switch>
                 <Route exact path='/' component={Home}/>
                 <Route exact path='/importacao' component={Importacao}/>
-                <Route exact path='/comissao' component={Comissao}/>
+                <Route exact path='/honorarios' component={Honorarios}/>
             </Switch>
         </BrowserRouter>
     )

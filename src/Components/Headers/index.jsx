@@ -47,7 +47,7 @@ const HeaderPages = () => {
               <Link to='/importacao'>Importacao</Link>
             </Menu.Item>
             <Menu.Item className = 'menu-item' key="3">
-              <Link to='/comissao'>Comissão</Link>
+              <Link to='/honorarios'>Honorarios</Link>
             </Menu.Item>            
           </Menu>          
         </Col>

@@ -1,4 +1,4 @@
-import "./comissao.css";
+import "./honorarios.css";
 import React, { useState } from "react";
 import {
   Button,
@@ -20,8 +20,8 @@ import { toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Comissao() {
-  const dateFormat = "MM/YYYY";
+export default function Honorarios() {
+  const dateFormat = "YYYY/MM";
   const db = firebase.firestore();
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -39,7 +39,7 @@ export default function Comissao() {
   const gravar = (fieldsValue) => {
     async function handleAdd() {
       if(fieldsValue.comentario==null || fieldsValue.comentario===undefined){
-        fieldsValue.comentario = ''
+        fieldsValue.comentario = 'vazio'
       }
       await firebase
         .firestore()
@@ -47,7 +47,7 @@ export default function Comissao() {
         .add({
           pagamento: fieldsValue.pagamento,
           comissao: fieldsValue.comissao,
-          data: moment(fieldsValue.datePicker).format("MM/YYYY"),
+          data: moment(fieldsValue.datePicker).format(dateFormat),
           comentario: fieldsValue.comentario,
         })
         .then(() => {
@@ -73,6 +73,10 @@ export default function Comissao() {
       .where("data", "==", fieldValue)
       .get()
       .then((snapshot) => {
+        if (snapshot.empty) {
+          toast.error('No matching documents.');
+          return;
+        }
         let lista = [];
 
         snapshot.forEach((doc) => {
@@ -88,7 +92,7 @@ export default function Comissao() {
         setResponse(lista)
         setIsModalVisible(true);
         form.resetFields();
-      });
+      })
   }
 
   const handleOk = () => {
@@ -178,6 +182,7 @@ export default function Comissao() {
       <Modal
         title="Resultado"
         visible={isModalVisible}
+        closable={true}
         footer={
         <Button key="submit" type="primary" onClick={handleOk}>
         Ok
