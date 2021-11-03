@@ -18,6 +18,23 @@
   fill: white;
 }
 
+#form-modal-importacao-config-tax{
+display: flex;
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+color: rgba(0, 0, 0, 0.85);
+font-size: 14px;
+font-variant: tabular-nums;
+line-height: 1.5715;
+list-style: none;
+font-feature-settings: 'tnum', "tnum";
+flex-direction: column;
+align-content: center;
+justify-content: center;
+align-items: flex-start;
+}
+
 .btn-div{
     display: flex;
     flex-direction: column;
@@ -71,3 +88,107 @@
   color: white;
   font-weight: bold;
   }
+
+.ant-form-item .ant-input-number-handler-wrap {
+  z-index: 2;
+  background: var(--toastify-icon-color-success);
+}
+
+.importacao-form{
+  margin-top:3em;
+}
+.ant-col-12 {
+  margin-top: 1em;
+  display: block;
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+
+#space-btn-gravar{
+  margin-left: 30%;
+}
+
+#form-pesquisa-data{
+  margin-left: 8%;
+  margin-top: 4em;
+}
+
+#resultados{
+  color: white;
+}
+#resultados >h1{
+  color: white;
+}
+
+#input-calc{
+  margin-top: 2em;
+}
+
+
+.ant-btn-icon-only {
+  width: 32px;
+  height: 32px;
+  padding: 2.4px 0;
+  font-size: 16px;
+  border-radius: 2px;
+  vertical-align: -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.ant-spin-nested-loading {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.ant-descriptions-title{
+  color: white;
+}
+
+.ant-descriptions-item-container {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+.ant-descriptions-item-label::after {
+  content: ':';
+  position: relative;
+  top: -0.5px;
+  margin: 0 8px 0 2px;
+  color: white;
+}
+
+.ant-descriptions-item-container .ant-descriptions-item-label, .ant-descriptions-item-container .ant-descriptions-item-content {
+  display: inline-flex;
+  align-items: center;
+  color: white;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.ant-row {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+#spin{
+  margin: 20px 0;
+  margin-bottom: 20px;
+  padding: 30px 50px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}

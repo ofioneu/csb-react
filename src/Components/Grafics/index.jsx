@@ -2,48 +2,68 @@ import React, {useState, useEffect} from 'react'
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts/highstock'
 import './grafic.css'
-// import firebase from "../../firebaseConnection";
+import firebase from "../../firebaseConnection";
+import {Spin} from 'antd'
 
 function GraficComissao(){
-  // const db = firebase.firestore();
+  const db = firebase.firestore();
   const [removeCredits, setRemoveCredits] = useState('')
-  // const [data, setData] = useState([])
+  const [dataPg, setDataPg] = useState()
   
   useEffect(()=>{
     setRemoveCredits(()=>{
+      if(dataPg){
       const value =document.getElementsByClassName('highcharts-credits')
       value[0].innerHTML=''
       return(value)
+      }
     }) 
      
-  },[removeCredits])
+  },[dataPg])
 
+  useEffect(()=>{
+    async function dataGrafic() {
+      const hono = db.collection("honorarios");
+      await hono
+        .orderBy('data')
+        .limit(12)
+        .get()
+        .then((snapshot) => {
+          let listaAll = [];
+          let listaPg = [];
+  
+          snapshot.forEach((doc) => {
+            listaAll.push({
+              id: doc.id,
+              pagamento: doc.data().pagamento,
+              data: doc.data().data,
+              comissao: doc.data().comissao,
+              comentario: doc.data().comentario,
+            });
 
-  // async function dataGrafic() {
-  //   const hono = db.collection("honorarios");
-  //   await hono
-  //     .where("data", "==", '10/2021')//ajustar aqui
-  //     .get()
-  //     .then((snapshot) => {
-  //       let lista = [];
+            listaPg.push(
+              doc.data().pagamento
+            )
+            let listPgNum = []
+            listaPg.forEach((i)=>{              
+              listPgNum.push(i)
+            })
 
-  //       snapshot.forEach((doc) => {
-  //         lista.push({
-  //           id: doc.id,
-  //           pagamento: doc.data().pagamento,
-  //           data: doc.data().data,
-  //           comissao: doc.data().comissao,
-  //           comentario: doc.data().comentario,
-  //         });
-  //         console.log(lista)
-  //       });
-  //     });
-  // }
+            setDataPg(listPgNum)
+            console.log('ListaAll: ',listaAll)
+            console.log('ListaPg: ',listaPg)
+            console.log('dataPg: ',dataPg)
+          });
+        });
+    }
+    dataGrafic()
 
-  // dataGrafic()
-       
-    
+  },[db])
+   
+  
     return(
+      <div>
+        {dataPg && (
         <HighchartsReact
         highcharts={Highcharts}
         options={{
@@ -73,14 +93,20 @@ function GraficComissao(){
               'Dec'
           ],
         },
-
+        
         series: [{
           name: 'Comissão',
-          data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]  
+          data:  [dataPg[0], dataPg[1], dataPg[2], dataPg[3], dataPg[4], dataPg[5], dataPg[6], dataPg[7], dataPg[8], dataPg[9], dataPg[10], dataPg[11] ]
       }]       
         }}
       />
+      )}
+      {!dataPg &&(
+        <Spin tip='Loading...'/>
+      )}
+    </div>
     )
+    
 }
 
 export default GraficComissao

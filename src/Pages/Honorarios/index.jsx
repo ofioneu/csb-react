@@ -8,6 +8,7 @@ import {
   Modal,
   Row,
   Col,
+  Space,
 } from "antd";
 
 import { SearchOutlined } from "@ant-design/icons";
@@ -26,6 +27,7 @@ export default function Honorarios() {
   const [form] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [response, setResponse] = useState([]);
+  const [datePicker, setDatePicker] = useState()
 
   const layout = {
     labelCol: {
@@ -36,41 +38,36 @@ export default function Honorarios() {
     },
   };
 
-  const gravar = (fieldsValue) => {
-    async function handleAdd() {
+  async function handleAdd(fieldsValue) {
       if(fieldsValue.comentario==null || fieldsValue.comentario===undefined){
         fieldsValue.comentario = 'vazio'
       }
+      console.log(moment(datePicker))
       await firebase
         .firestore()
         .collection("honorarios")
         .add({
-          pagamento: fieldsValue.pagamento,
-          comissao: fieldsValue.comissao,
-          data: moment(fieldsValue.datePicker).format(dateFormat),
+          pagamento: Number(fieldsValue.pagamento),
+          comissao: Number(fieldsValue.comissao),
+          data: datePicker,
           comentario: fieldsValue.comentario,
         })
         .then(() => {
           toast.success("DADOS CADASTRADO COM SUCESSO!");
+          form.resetFields();
         })
         .catch((error) => {
           toast.error("GEROU ALGUM ERRO!");
         });
     }
-    handleAdd();
-    form.resetFields();
-  };
-
-  function getValue() {
-    const data = document.getElementById("input-data").value;
-        toFind(data);
     
-  }
 
-  async function toFind(fieldValue) {
+
+  async function toFind() {
+    console.log(moment(datePicker))
     const hono = db.collection("honorarios");
     await hono
-      .where("data", "==", fieldValue)
+      .where("data", "==", datePicker)
       .get()
       .then((snapshot) => {
         if (snapshot.empty) {
@@ -98,11 +95,16 @@ export default function Honorarios() {
   const handleOk = () => {
     setIsModalVisible(false);
   };
+
+  function onchangeDate(date, dateString){
+    let data = moment(date).format(dateFormat)
+    setDatePicker(data)
+  }
   return (
     <div>
       <Row>
         <Col span={12} id="comisaao-form">
-          <Form onFinish={gravar} form={form} {...layout}>
+          <Form onFinish={handleAdd} form={form} {...layout}>
             <Form.Item
               label="R$ Pagamento"
               name="pagamento"
@@ -134,7 +136,7 @@ export default function Honorarios() {
             </Form.Item>
             
             <Form.Item
-              label="data"
+              label="Data"
               name="data"
               rules={[
                 {
@@ -143,21 +145,19 @@ export default function Honorarios() {
                 },
               ]}
             >
-              <Input.Group>
-              <DatePicker id="input-data"  picker='month' format={dateFormat} /> 
-              <Button
+            <Space>
+                <DatePicker id="input-data"  picker='month' onChange={onchangeDate} />
+                <Button
                   className="search"
                   shape="circle"
                   icon={<SearchOutlined />}
                   size="large"
-                  onClick={getValue}
+                  onClick={toFind}
                   htmlType='button'
                 />
-              </Input.Group> 
+            </Space>                                
             </Form.Item>
 
-           
-             
             <Form.Item
               label="Comentario"
               name="comentario"

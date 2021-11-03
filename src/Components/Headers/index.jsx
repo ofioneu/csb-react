@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
-import { Row, Col } from 'antd';
+import { Row, Col, Spin } from 'antd';
 import { Menu } from 'antd';
 import {Link} from 'react-router-dom'
 import './header.css'
@@ -52,9 +52,17 @@ const HeaderPages = () => {
           </Menu>          
         </Col>
         <Col span={7}>
-          <div className='moeda'>
+        {moeda.ask &&(
+          <div className='moeda'>            
               {`${moeda.name}: R$ ${moeda.ask}`}
           </div>
+          )}
+
+          {!moeda.ask && (
+            <div className='moeda'>          
+              <Spin/>
+          </div>
+          )}
         
         </Col>
         </Row>

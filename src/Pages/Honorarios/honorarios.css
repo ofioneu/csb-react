@@ -71,3 +71,20 @@
   color: white;
   font-weight: bold;
   }
+
+
+  .ant-space-align-center {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    margin-right: 17%;
+}
+
+.ant-row {
+  display: flex;
+  flex-flow: row wrap;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+}
