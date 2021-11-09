@@ -15,7 +15,7 @@ import {
 } from "antd";
 
 import { SearchOutlined } from "@ant-design/icons";
-import firebase from "../../firebaseConnection";
+import firebase from "../../Services/firebaseConnection";
 import NumberFormat from "react-number-format";
 import moment from "moment";
 import { toast } from "react-toastify";

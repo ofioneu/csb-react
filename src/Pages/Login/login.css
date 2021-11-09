@@ -1,0 +1,12 @@
+.ant-form{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    margin-top: 13%;
+}
+
+#area-login{
+    background: red;
+}

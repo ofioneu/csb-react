@@ -2,22 +2,20 @@ import React, {useState, useEffect} from 'react'
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts/highstock'
 import './grafic.css'
-import firebase from "../../firebaseConnection";
+import firebase from "../../Services/firebaseConnection";
 import {Spin} from 'antd'
 
 function GraficComissao(){
   const db = firebase.firestore();
-  const [removeCredits, setRemoveCredits] = useState('')
   const [dataPg, setDataPg] = useState()
   
   useEffect(()=>{
-    setRemoveCredits(()=>{
+    
       if(dataPg){
       const value =document.getElementsByClassName('highcharts-credits')
       value[0].innerHTML=''
       return(value)
       }
-    }) 
      
   },[dataPg])
 
@@ -58,7 +56,7 @@ function GraficComissao(){
     }
     dataGrafic()
 
-  },[db])
+  },[])
    
   
     return(
