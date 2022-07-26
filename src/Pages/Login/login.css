@@ -1,0 +1,33 @@
+#login-div{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    background-image: url("../../assets/bck-login.jpg");
+
+}
+
+
+#basic{
+/* margin-top:10%; */
+display: flex;
+flex-direction: column;
+flex-wrap: wrap;
+justify-content: center;
+align-items: center;
+align-content: center;
+color: black;
+font-weight: bold;
+font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#card-login{
+    background-color:rgb(194, 202, 209) ;
+    opacity: 0.88;
+    width: auto;
+    border-radius: 10px;
+    
+}

@@ -1,8 +1,34 @@
-body{
-    width: 100%;
-    height: 100%;
-    background: #1D4061;
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-.ant-layout{
-    background: #1D4061;
+
+*:focus{
+  outline: 0;
+}
+
+html, body, #root{
+  height: 100%;
+}
+
+body{
+  font: 14px 'Roboto', sans-serif;
+  /* background-color: #7E7C7C; */
+  background-color: #574951;
+}
+
+a{
+  text-decoration: none;
+}
+
+ul{
+  list-style: none;
+}
+
+button{
+ cursor: pointer; 
 }

@@ -1,45 +1,86 @@
-/* .conteiner {
-    display: flex;
-    align-items: center;
-    align-content: center;
-    width: 100%;
-    margin-top: 10px;
-    text-align: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-} */
-
-
 .site-card-border-less-wrapper {
-    padding: 10px;
-    background: #1D4061;
+    margin-bottom: 99px;
+    width: 70%;
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+    flex-wrap: nowrap;
+    margin-left: 10%;
   }
 
-.card{
-    /* width: 320px;
-    height: 340px; */
-    width: 320px;
-    height:auto;
-    background: white;
-    color: #0f60ab;
+  .card {
+    width: 100%;
+    height: auto;
+    background: #3a111c;
+    color: white;
     font-weight: bold;
     margin: 10px;
+    opacity: 0.88;
+    box-shadow: 10px 5px 5px rgb(0 0 0 / 85%);
+}
+a>span {
+  color: white;
+  font-family: sans-serif;
 }
 
 .ant-card-head-title {
-display: inline-block;
+display: inline-flex;
 flex: 1 1;
 padding: 16px 0;
 overflow: hidden;
 white-space: nowrap;
 text-overflow: ellipsis;
-color: #1D4061;
+color: white;
+font-weight: bold;
+justify-content: center;
+}
+
+.ant-card-body{
+  display: flex;
+  justify-content: center;
+}
+
+a.ant-btn {
+  padding-top: 0.01px !important;
+  line-height: 30px;
+  color: white;
+  font-weight: bold;
+}
+
+.ant-card-actions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: #3a111c;
+  border-top: 1px solid #f0f0f0;
+  box-shadow: white;
+}
+
+
+
+.ant-btn-icon-only {
+  width: 32px;
+  height: 32px;
+  padding: 2.4px 0;
+  font-size: 16px;
+  border-radius: 2px;
+  vertical-align: -1px;
+  color: chocolate;
+  border: 0px;
+  background: #3a111c;
+}
+.ant-btn-icon-only {
+  width: 32px;
+  height: 32px;
+  padding: 2.4px 0;
+  font-size: 16px;
+  border-radius: 2px;
+  vertical-align: -1px;
+  color: chocolate;
+  border: 0px;
+}
+
+
+#conteiner-home{
+  /* background-image: url("../../assets/bck-login.jpg"); */
+  background: #574951;
 }

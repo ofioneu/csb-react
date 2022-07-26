@@ -1,24 +1,36 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import 'antd/dist/antd.css';
 import './index.css';
-import { Layout } from 'antd';
-import Routes from './routers';
-import FooterPages from './Components/Footer';
-import { ToastContainer } from 'react-toastify'
+import Routes from './routes';
+import AuthProvider from './Contexts/auth';
+import MoedaProvaider from './Contexts/moeda';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
-
-const {Content } = Layout;
 
 function App() {
   return (
- <Layout>
-    <Content>
-      <Routes/>
-      <ToastContainer autoClose={3000}/>
-    </Content>
-    <FooterPages/>
-  </Layout>
-);
+    <AuthProvider>
+      <MoedaProvaider>
+      <BrowserRouter>
+      <ToastContainer position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover />
+        <Routes />        
+      </BrowserRouter>
+      </MoedaProvaider>
+    </AuthProvider>
+
+
+
+  );
 }
 
 export default App;
