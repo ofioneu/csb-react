@@ -76,7 +76,7 @@ export default function Calculadora() {
 
     getTax();
 
-  },[configTaxBd, db]);
+  },[]);
 
 
   // atualiza as taxas no banco de dados
