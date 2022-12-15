@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import 'antd/dist/antd.css';
 import { Row, Col, Spin } from 'antd';
-import { Menu } from 'antd';
 import { Link } from 'react-router-dom'
+import { useHistory, NavLink } from "react-router-dom";
+
 import './header.css'
 import { MoedaContext } from '../../Contexts/moeda';
 
@@ -13,6 +14,12 @@ export default function HeaderPages() {
 
   const { moeda } = useContext(MoedaContext)
 
+  function changeColorMenuItem(e) {
+    const menuItem = e.target.getAttribute('a-key')
+    menuItem.style.backgroundColor = '#7E7C7C'
+
+  }
+  const currentRoute = useHistory().location.pathname.toLowerCase();
   return (
 
     <div className='row-menu'>
@@ -20,26 +27,25 @@ export default function HeaderPages() {
         <Col span={2}>
           <div className='logo'>
             <Link className='logo-item' to='/home'>
-              <h1>CSB</h1>
+              CSB
             </Link>
-
           </div>
 
         </Col>
         <Col span={15}>
-          <Menu theme='dark' mode="horizontal" className='menu'>
-            <Menu.Item className='menu-item' key="1" title='Home'>
-              <Link className='link-menu' to='/home'>Home</Link>
-            </Menu.Item>
-            <Menu.Item className='menu-item' key="2">
-              <Link className='link-menu' to='/calculadoras'>Calculadoras</Link>
-            </Menu.Item>
-          </Menu>
+
+          <div className='tab-bar'>
+            <Link className={currentRoute.includes("home") ? "tab active" : "tab"} active to='/home'>Home</Link>
+            <Link className={currentRoute.includes("sp") ? "tab active" : "tab"} active to='/sp'>São Paulo</Link>
+            <Link className={currentRoute.includes("am") ? "tab active" : "tab"} active to='/am'>Manaus</Link>
+            <Link className={currentRoute.includes("downloads") ? "tab active" : "tab"} active to='/downloads'>Downloads</Link>
+            <Link className={currentRoute.includes("calculadoras") ? "tab active" : "tab"} active to='/calculadoras'>Calculadoras</Link>   
+          </div>
         </Col>
         <Col span={7}>
           {moeda.ask && (
             <div className='moeda'>
-              {`${moeda.name}: R$ ${moeda.ask}`}
+              {`Dollar: R$ ${moeda.ask}`}
             </div>
           )}
 

@@ -24,32 +24,31 @@
 }
 
 
-
-
-  .tab-bar {
-    margin: 0px;
-    padding: 0px;
-    display: flex;
+.menu ul{
     list-style-type: none;
-  }
-
-
-.tab {
-    width: 100%;
-    padding: 20px 0;
-    background: #3a111c;
-    color: white;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
+    background-color: #3a111c;
+    height: 100%;
+}
+
+  
+  .menu li {
+    float: left;
+  }
+  
+  .menu li a {
+    display: block;
+    color: white;
     text-align: center;
-    flex-grow: 1;
-    cursor: pointer;
-    position: relative;
+    padding: 14px 16px;
     text-decoration: none;
   }
-
-  .tab.active {
-    background: #575856;
-    color: rgb(252, 252, 252);
+  
+  /* Change the link color to #111 (black) on hover */
+  .menu li a:hover {
+    background-color: rgb(97, 96, 96);
   }
   
   

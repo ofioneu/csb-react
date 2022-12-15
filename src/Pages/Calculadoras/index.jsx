@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import firebase from '../../Services/firebaseConnection'
 import { InputNumber, Form, Button, Row, Col, Card, Modal } from 'antd'
 import { SettingFilled } from '@ant-design/icons';
@@ -6,10 +6,13 @@ import './calculadoras.css'
 import HeaderPages from '../../Components/Headers';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { MoedaContext } from '../../Contexts/moeda';
 
 import { Table } from 'antd';
 
 export default function Calculadora() {
+
+  const { moeda } = useContext(MoedaContext)
 
   // const { moeda } = useContext(MoedaContext)
   const [precoReal, setPrecoReal] = useState()
@@ -19,6 +22,16 @@ export default function Calculadora() {
   const [compra, setCompra] = useState(0)
   const [showModalSetTax, setShowModalSetTax] = useState(false)
   const [configTaxBd, setConfigTaxBd] = useState([]);
+
+  // States que serao usadas para atualizar ad taxas do banco de dados
+  const [aliquota, setAliquota] = useState()
+  const [iof, setIof] = useState()
+  const [icms, setIcms] = useState()
+  const [dhl, setDhl] = useState()
+  const [alibaba, setAlibaba] = useState()
+  const [importTax, setImportTax] = useState()
+
+  //////////////////////////////////////////////////////////////
 
   // Hook Obj resultados dos calculos
   const [custosImportacao, setCustosImportacao] = useState({})
@@ -76,22 +89,23 @@ export default function Calculadora() {
 
     getTax();
 
+
   },[]);
 
 
   // atualiza as taxas no banco de dados
-  async function configTax(fieldsValue) {
+  async function configTax() {
     await firebase
       .firestore()
       .collection("tax")
       .doc(configTaxBd[0].id)
       .update({
-        aliquota: fieldsValue.aliquota,
-        importTax: fieldsValue.importTax,
-        icms: fieldsValue.icms,
-        iof: fieldsValue.iof,
-        alibaba: fieldsValue.taxAlibaba,
-        dhl: fieldsValue.taxDhl
+        aliquota: aliquota,
+        importTax: importTax,
+        icms: icms,
+        iof: iof,
+        alibaba: alibaba,
+        dhl: dhl
       })
       .then(() => {
         toast.success("DADOS CADASTRADO COM SUCESSO!");
@@ -104,12 +118,12 @@ export default function Calculadora() {
 
   function calcular(precoReal, precoInvoice, freteUsd) {
     // colocar os dados de taxas no banco de dados
-    const taxAlibaba = 0.0
-    const taxaImportacao = 60.0
-    const taxaIof = 1.1
-    const taxaIcms = 18.0
-    const valorFixDhl = 106.26
-    const moedaValue = 5.35 //moeda.ask
+    const taxAlibaba = configTaxBd.alibaba
+    const taxaImportacao = configTaxBd.importTax
+    const taxaIof = configTaxBd.iof
+    const taxaIcms = configTaxBd.icms
+    const valorFixDhl = configTaxBd.dhl
+    const moedaValue = moeda.ask
 
     // convertendo valores prod e ship em real
     const valorProdutoInvoiceBrl = precoInvoice * moedaValue
@@ -272,7 +286,9 @@ export default function Calculadora() {
                   configTaxBd[0].aliquota
                 )
               }
+              onChange={e => setAliquota(e)}
             />
+            {console.log("aliquota: ", aliquota)}
           </Form.Item>
           <Form.Item label="Imposto de importação" name="importTax">
             <InputNumber min={0} max={100}
@@ -281,7 +297,7 @@ export default function Calculadora() {
                   configTaxBd[0].importTax
                 )
               }
-
+              onChange={e => setImportTax(e)}
             />
           </Form.Item>
           <Form.Item label="ICMS" name="icms">
@@ -291,7 +307,7 @@ export default function Calculadora() {
                   configTaxBd[0].icms
                 )
               }
-
+              onChange={e => setIcms(e)}
             />
           </Form.Item>
           <Form.Item label="IOF" name="iof">
@@ -301,7 +317,7 @@ export default function Calculadora() {
                   configTaxBd[0].iof
                 )
               }
-
+              onChange={e => setIof(e)}
             />
           </Form.Item>
           <Form.Item label="TAX alibaba" name="taxAlibaba">
@@ -312,7 +328,7 @@ export default function Calculadora() {
                   configTaxBd[0].alibaba
                 )
               }
-
+              onChange={e => setAlibaba(e)}
             />
           </Form.Item>
           <Form.Item label="TAX DHL" name="taxDhl">
@@ -323,7 +339,7 @@ export default function Calculadora() {
                   configTaxBd[0].dhl
                 )
               }
-
+              onChange={e => setDhl(e)}
             />
           </Form.Item>
           <Form.Item>

@@ -1,5 +1,6 @@
-import React from 'react'
-import { Card, Button, Row, Col } from 'antd';
+import React, { useState, useEffect } from 'react'
+import firebase from '../../Services/firebaseConnection'
+import { Card, Button, Row, Col, Spin } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import './home.css'
 import HeaderPages from '../../Components/Headers';
@@ -7,6 +8,34 @@ import HeaderPages from '../../Components/Headers';
 import { toast } from 'react-toastify';
 
 export default function Home() {
+
+    const db = firebase.firestore();
+
+    const [AllData, setAllData] = useState([])    
+
+    useEffect(()=>{
+        getAllData()
+        
+    },[])
+
+    async function getAllData(){
+        const getData = await db.collection('cardsHome')
+        getData.get().then((snapshot)=>{
+            if (snapshot.empty) {
+                toast.error("No matching documents.");
+                return;
+              }
+              
+                    const dataDoc = snapshot.docs.map((doc) => {
+                      return { id: doc.id, ...doc.data() }
+                    })
+                    setAllData(dataDoc)
+                    
+              });
+      
+    }
+
+
 
     function copy(idKey) {
         let textoCopiado = document.getElementById(idKey).innerText;
@@ -20,6 +49,9 @@ export default function Home() {
             })
     }
 
+    
+        
+
     return (
 
         <div>
@@ -28,58 +60,102 @@ export default function Home() {
                 <Row>
                     <Col span={12} id='col-1'>
                         <div className="site-card-border-less-wrapper">
+                            <li>
                             <Card className='card' title="Dados Bancarios Peças" bordered={true}
-                                actions={[<Button onClick={()=>copy('text-dbpecas')} icon={<CopyOutlined />} ></Button>]}
-                        >
-                                <ul id='text-dbpecas'>
-                                    <li>Santander</li>
-                                    <li>Agencia: 2045 </li>
-                                    <li>Conta corrente: 130040056</li>
-                                    <li>CNPJ: 36.196.281/0001-47 </li>
-                                    <li>Nome: Chiller Service Brasil</li>
-                                    <li>CHAVE PIX(CNPJ): 36196281000147</li>
-                                    <li> WWW.CHILLERSERVICEBRASIL.COM.BR</li>
-                                </ul>
+                                actions={[<Button onClick={()=>copy('text-dbpecas')} icon={<CopyOutlined />} ></Button>]}>
+                                
+                                {
+                                AllData[0] && (                             
+                                    <ul id='text-dbpecas'>
+                                    <li>{AllData[1].banco}</li>
+                                    <li>Agencia: {AllData[1].agencia}</li>
+                                    <li>Conta corrente: {AllData[1].cc}</li>
+                                    <li>CNPJ: {AllData[1].cnpj}</li>
+                                    <li>Nome: {AllData[1].nome}</li>
+                                    <li>PIX: {AllData[1].pix}</li>
+                                    <li>Site: {AllData[1].site}</li>
+                                </ul> )}
+
+                                {!AllData[0] && (
+                                    <div>
+                                    <Spin />
+                                    </div>
+                                )}
 
                             </Card>
                             <Card className='card' title="Dados Bancarios Serviços"
                                 bordered={true}
                                 actions={[<Button onClick={()=>copy('text-dbservico')} icon={<CopyOutlined />} ></Button>]}
                             >
-                                <ul id='text-dbservico'>
-                                    <li>Banco do Brasil</li>
-                                    <li>Agencia: 2324-8</li>
-                                    <li>Conta corrente: 34.585-7</li>
-                                    <li>CNPJ: 36.196.281/0001-47</li>
-                                    <li>Nome: Chiller Service Brasil</li>
-                                    <li>CHAVE PIX: 19992171858</li>
-                                    <li>WWW.CHILLERSERVICEBRASIL.COM.BR</li>
-                                </ul>
+
+                            {
+                                AllData[0] && (                             
+                                    <ul id='text-dbservico'>
+                                    <li>{AllData[0].banco}</li>
+                                    <li>Agencia: {AllData[0].agencia}</li>
+                                    <li>Conta corrente: {AllData[1].cc}</li>
+                                    <li>CNPJ: {AllData[0].cnpj}</li>
+                                    <li>Nome: {AllData[0].nome}</li>
+                                    <li>PIX: {AllData[0].pix}</li>
+                                    <li>Site: {AllData[0].site}</li>
+                                </ul> )}
+
+                                {!AllData[0] && (
+                                    <div>
+                                    <Spin />
+                                    </div>
+                                )}
 
                             </Card>
                             <Card className='card' title="Endereços"
                                 actions={[<Button onClick={()=>copy('text-endereco')} icon={<CopyOutlined />} ></Button>]}
                                 bordered={true}
-                            >
-                                <ul id='text-endereco'>
-                                    <li>Escrtório: Rua Angelica, 1318, Jd. São Sebastião, Hortolandia -SP</li>
-                                    <li>Empresa: RUA PAULA FRANCINE PALHOTO DA SILVA, 67 <br></br> - JARDIM DAS FIGUEIRAS I, HORTOLANDIA - SP</li>
-                                </ul>
+                            >   
+                                {/* falta add os endereços de manaus */}
+                                {AllData[2] &&(
+                                    <ul id='text-endereco'>
+                                    <li>Escritório SP: {AllData[2].adressEscritorio} </li>
+                                    <li>CEP Escritório SP: {AllData[2].cepEscritorio} </li>
+                                    <li>Chiller SP: {AllData[2].adressChiller} </li>
+                                    <li>Escritório AM: {AllData[2].adressEscritorioAm} </li>
+                                    <li>CEP Escritório AM: {AllData[2].cepEscritorioAm} </li>
+                                    <li>Chiller AM: {AllData[2].adressChillerAm} </li>
+                                    <li>CEP Chiller AM: {AllData[2].cepChillerAm} </li>
+                                    </ul>
+                                )}
+                                {!AllData[0] && (
+                                    <div>
+                                    <Spin />
+                                    </div>
+                                )}
+                                           
                             </Card>
                             <Card className='card' title="Dados juridicos"
-                                actions={[<Button onClick={()=>copy('text-juridico')} icon={<CopyOutlined />} ></Button>]}
+                                actions={[<Button onClick={()=>copy('text-juridico')} icon={<CopyOutlined />} ></Button>]}>
                                 bordered={true}
-                            >
+                                
+                                {AllData[2] &&(
                                 <ul id='text-juridico'>
-                                    <li>Chiller Service Brasil: 36.196.281/0001-47</li>
-                                    <li>Chiller Service Brasil (IE): 748323108117</li>
-                                    <li>Chiller Service Brasil (IM): 129303</li>
-                                    <li>RG Leandro: 29611019x</li>
-                                    <li>CPF Leandro: 300.109.358-78</li>
-                                    <li>Nº Conta DHL: 964602119</li>
-                                    <li>Fabio Martins: 42.530.817/0001-11</li>
-                                    <li>Arthur Ferreira: 47.116.459/0001-19</li>
+                                    <li>CNPJ CSB SP: {AllData[3].cnpjChiller}</li>
+                                    <li>IE CSB SP: {AllData[3].ieChiller}</li>
+                                    <li>IM CSB SP: {AllData[3].imChiller}</li>
+                                    <li>RG Leandro: {AllData[3].rgLeandro}</li>
+                                    <li>CPF Leandro: {AllData[3].cpfLeandro}</li>
+                                    <li>Nº Conta DHL: {AllData[3].dhl}</li>
+                                    <li>Fabio Martins: {AllData[3].cnpjFabio}</li>
+                                    <li>CNPJ Manaus: {AllData[3].cnpjChillerAm} </li>
+                                    <li>IE Manaus:{AllData[3].ieChillerAm} </li>
+                                    <li>IM Manaus: {AllData[3].imChillerAm} </li>
+                                    <li>CPF Ricardo: {AllData[3].cpfRicardo}</li>
+                                    <li>RG Ricardo:{AllData[3].rgRicardo}</li>
                                 </ul>
+                                )}
+                                    {!AllData[0] && (
+                                    <div>
+                                    <Spin />
+                                    </div>
+                                )}
+
                             </Card>
                             <Card className='card' title="Frase Serviço"
                                 actions={[<Button onClick={()=>copy('text-servico')} icon={<CopyOutlined />} ></Button>]}
@@ -88,12 +164,14 @@ export default function Home() {
                                 <p id='text-servico'>TRABALHO REALIZADO POR UM ENGENHEIRO MECANICO ESPECIALIZADO EM MANUTENÇÃO <br></br> E TREINAMENTOS
                                     EM EQUIPAMENTOS DAS MARCAS CARRIER , TRAINE E YORK.CREA: 5063881498</p>
                             </Card>
-
+                            </li>
                         </div>
                     </Col>
 
                     <Col span={12} id='col-2'>
                         <div className="site-card-border-less-wrapper">
+
+                            <li>
 
                             <Card className='card' title='Forncedores'>
                                 <Button type='link' href='https://www.chillerpecas.com.br/' target='_blank' >Chiller Peças</Button>
@@ -122,6 +200,7 @@ export default function Home() {
                             <Card className='card' title='AGIR'>
                                 <Button type='link' href='https://ecompras.agirsaude.org.br/v/Default.aspx?parms=52F72D3798851D747BD5FCC6A1916D19F41E2C5748B2836D160BF3630131992B' target='_blank' >Compras</Button>
                             </Card>
+                            </li>
                         </div>
                     </Col>
 
@@ -130,5 +209,4 @@ export default function Home() {
             </div>
             
         </div>
-    )
-}
+    )}
