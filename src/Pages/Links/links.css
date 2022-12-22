@@ -1,0 +1,18 @@
+.ant-col-12 {
+    padding: 10px;
+    display: flex;
+    flex: 0 0 50%;
+    max-width: 50%;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    align-items: flex-start;
+
+}
+
+
+ul {
+    display: flex;
+    list-style: none;
+    flex-direction: column;
+}

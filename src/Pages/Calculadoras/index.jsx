@@ -224,13 +224,13 @@ export default function Calculadora() {
                 </Form>
                 <Form id='form-btn'>
                   <Form.Item {...tailLayout}>
-                    <Button onClick={() => calcular(precoReal, precoInvoice, frete)}>CALCULAR</Button>
+                    <Button className='btn-calc' onClick={() => calcular(precoReal, precoInvoice, frete)}>CALCULAR</Button>
                   </Form.Item>
                   <Form.Item>
-                    <Button onClick={() => setDataSource([])}>Limpar</Button>
+                    <Button className='btn-calc' onClick={() => setDataSource([])}>Limpar</Button>
                   </Form.Item>
                   <Form.Item>
-                    <Button icon={<SettingFilled />} onClick={() => setShowModalSetTax(true)} />
+                    <Button className='btn-calc' icon={<SettingFilled />} onClick={() => setShowModalSetTax(true)} />
                   </Form.Item>
                 </Form>
               </Col>

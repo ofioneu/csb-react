@@ -35,9 +35,10 @@ export default function HeaderPages() {
         <Col span={15}>
 
           <div className='tab-bar'>
-            <Link className={currentRoute.includes("home") ? "tab active" : "tab"} active to='/home'>Home</Link>
+            
             <Link className={currentRoute.includes("sp") ? "tab active" : "tab"} active to='/sp'>São Paulo</Link>
             <Link className={currentRoute.includes("am") ? "tab active" : "tab"} active to='/am'>Manaus</Link>
+            <Link className={currentRoute.includes("home") ? "tab active" : "tab"} active to='/home'>Links</Link>
             <Link className={currentRoute.includes("downloads") ? "tab active" : "tab"} active to='/downloads'>Downloads</Link>
             <Link className={currentRoute.includes("calculadoras") ? "tab active" : "tab"} active to='/calculadoras'>Calculadoras</Link>   
           </div>
