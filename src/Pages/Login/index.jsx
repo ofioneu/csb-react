@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Button, Form, Input, Card, Checkbox } from 'antd';
 import { AuthContext } from '../../Contexts/auth'
+import imgLogin from  "../../assets/page_login.png"
 import './login.css'
 
 export default function Login() {
@@ -19,7 +20,9 @@ export default function Login() {
 
 
   return (
-    <div id='login-div'>
+    <div className="loginPage">
+    <div className="loginContainer">
+      <img src={imgLogin} alt="Imagem de Login" className="centeredImg" />
       <Card
         id='card-login'
         bordered={true}
@@ -64,11 +67,11 @@ export default function Login() {
             <Input.Password value={pass} onChange={(e) => setPass(e.target.value)} />
           </Form.Item>
 
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
+            <Form.Item  name="remember" valuePropName="checked" noStyle>
+              <Checkbox className='checkbox-login'>Remember me</Checkbox>
             </Form.Item>
             <Form.Item>
-              <Button onClick={handleSubmit} type="primary" htmlType="submit">
+              <Button id='btn-login' onClick={handleSubmit} type="primary" htmlType="submit">
                 {loadingAuth ? 'Carregando' : 'Acessar'}
               </Button>
             </Form.Item>
@@ -76,5 +79,6 @@ export default function Login() {
 
       </Card>
     </div>
+  </div>
   )
 }   

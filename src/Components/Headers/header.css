@@ -14,16 +14,23 @@ background: #7E7C7C;
     border-bottom: 0;
     width: 100%;
     height: 100%;
-    background: #3a111c;
+    background: #AF373E;
 
 }
 
-.logo{
+#logo{
     display: flex;
     align-content: center;
     justify-content: center;
     align-items: center;
-    background: #3a111c;
+    background: white;
+    height: 58px;
+    border: 2px solid #AF373E;
+}
+
+.col-menu-2{    
+    height: 58px;
+
 }
 
 .logo-item > h1{
@@ -38,7 +45,17 @@ background: #7E7C7C;
     justify-content: center;
     align-content: center;
     align-items: center;
-    background: #3a111c;
-    height: 100%;
+    background: #AF373E;
+    height: 58px;
+}
+
+.row-menu{
+    height: 58px;
+    width: 100%;
+}
+
+.logo-item{
+    display: flex;
+    justify-content: center;
 }
 

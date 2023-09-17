@@ -1,0 +1,45 @@
+.formEan{
+    width: 96%;
+    height: 100%;
+    /* background: #515151;
+    color: #515151; */
+    font-weight: bold;
+    margin-top: 33px;
+    margin-left: 10px;
+    opacity: 0.88;
+    /* box-shadow: 10px 5px 5px rgb(0 0 0 / 85%); */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+  
+ 
+  .form{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+
+  .conteiner{
+  height: 100%;
+  background: #717171;
+  
+  }
+  
+  #btnEan{
+    color: red;
+    background: #717171;
+  }
+
+  #outputEan{
+    padding: 10px;
+    background: yellow;
+    font-weight: bold;
+  }
+  
+  
+  
+  .ant-form-item-label > label {
+    color: #ffffff; /* Defina a cor desejada aqui */
+  }

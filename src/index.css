@@ -18,7 +18,7 @@ html, body, #root{
 body{
   font: 14px 'Roboto', sans-serif;
   /* background-color: #7E7C7C; */
-  background-color: #574951;
+  background-color: #ffff;
 }
 
 a{
@@ -31,4 +31,8 @@ ul{
 
 button{
  cursor: pointer; 
+}
+
+.customSpin .ant-spin-dot i{
+  background-color: #ffff;
 }
