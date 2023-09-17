@@ -349,7 +349,7 @@ export default function ImportacaoForm() {
               {awbList[0] &&
                 awbList.map((awb, index) => (
                   <li key={index}>
-                    <span style={{cursor:'pointer'}} onClick={() => { setModalAwb(true); fetchData(); }} id="btnListAwb"> {awb}</span>
+                    <span style={{cursor:'pointer', color:'white'}} onClick={() => { setModalAwb(true); fetchData(); }} id="btnListAwb"> {awb}</span>
 
                   </li>
                 ))}
