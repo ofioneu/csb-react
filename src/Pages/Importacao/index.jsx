@@ -31,16 +31,13 @@ export default function ImportacaoForm() {
   const [events, setEvents] = useState([]);
   const [awbList, setAwbList] = useState([]);
   const [modalAwb, setModalAwb] = useState(false);
+  const [showNoActiveAwbMessage, setShowNoActiveAwbMessage] = useState(false);
+  
 
   const db = firebase.firestore();
   const importacoesCollection = db.collection("importacoes");
 
   const [form] = Form.useForm();
-
-  
-
-  
-  
 
   useEffect(() => {
     // Função para buscar os documentos no Firestore
@@ -58,7 +55,7 @@ export default function ImportacaoForm() {
           // Obter o valor do campo awb
 
           const awb = doc.data().awb;
-          toast.info('AWB encontrados: ',awb); // Aqui você pode fazer o que desejar com o valor do campo awb
+          toast.info("AWB encontrados: ", awb); // Aqui você pode fazer o que desejar com o valor do campo awb
           awbArray.push(awb);
           setAwbList(awbArray);
         });
@@ -72,80 +69,49 @@ export default function ImportacaoForm() {
     fetchDocuments();
   }, []);
 
-
   let options = {
     method: "GET",
     url: "https://api-eu.dhl.com/track/shipments",
-    params: { trackingNumber: awbList[0] }, 
+    params: { trackingNumber: awbList[0] },
     headers: { "DHL-API-Key": "0QPbSWdBwP0m9laLl6VOdaEDvtJuhSwP" },
   };
 
- // useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await axios.request(options).then(function (response) {
-          console.log("response.data: ", response.data);
-          const eventsData = response.data.shipments[0].events;
-  
-          // Verifica se eventsData é uma matriz vazia
-          if (eventsData.length === 0) {
-            toast.error("Os dados requeridos não foram retornados.");
-          } else {
-            setEvents(eventsData);
-          }
-        });
-      } catch (error) {
-        toast.error("Error fetching events:", error);
-      }
-    };
-  
-  //   // Define um timeout de 10 segundos (ou o valor que desejar)
-  //   const timeoutId = setTimeout(() => {
-  //     toast.error("Tempo esgotado - os dados requeridos não foram retornados.");
-  //   }, 30000); // 30 segundos (30000 milissegundos)
-  
-  //   fetchData(); // Chamada imediata da função fetchData
-  
-  //   const interval = setInterval(fetchData, 3600000); // Atualiza a cada 1 hora
-  
-  //   // Limpa o timeout e o intervalo ao desmontar o componente
-  //   return () => {
-  //     clearTimeout(timeoutId);
-  //     clearInterval(interval);
-  //   };
-  // //}, []);
-  
-
- 
-
-  const handleSubmit = async (values) => {
-    console.log("Valores do formulário:", values);
-    // Realizar ações com os valores do formulário, como salvar no Firestore
-
+  // useEffect(() => {
+  const fetchData = async () => {
     try {
-      const formattedValues = {
-        ...values,
-        invoiceDate: moment(values.invoiceDate).format("YYYY-MM-DD"),
-        highPay: moment(values.highPay).format("YYYY-MM-DD"),
-        lowPay: moment(values.lowPay).format("YYYY-MM-DD"),
-        switchAwb: values.switchAwb || false,
-      };
+      await axios.request(options).then(function (response) {
+        console.log("response.data: ", response.data);
+        const eventsData = response.data.shipments[0].events;
 
-      if (!(await importacoesCollection.get()).exists) {
-        await importacoesCollection.doc().set({});
-      }
-      const docRef = await db.collection("importacoes").add(formattedValues);
-      toast.success("Documento salvo com ID:", docRef.id);
-
-      // Limpar o formulário após o envio
-      form.resetFields();
+        // Verifica se eventsData é uma matriz vazia
+        if (eventsData.length === 0) {
+          toast.error("Os dados requeridos não foram retornados.");
+        } else {
+          setEvents(eventsData);
+        }
+      });
     } catch (error) {
-      console.log("Error: ", error);
-      toast.error("Erro ao salvar no Firestore:", error);
+      toast.error("Error fetching events:", error);
     }
   };
 
-  // Função para lidar com a pesquisa
+
+    useEffect(() => {
+    if (!awbList[0]) {
+      // Se a lista awbList estiver vazia, defina showNoActiveAwbMessage como true após 5 segundos
+      const timeoutId = setTimeout(() => {
+        setShowNoActiveAwbMessage(true);
+      }, 5000); // 5000 milissegundos (5 segundos)
+
+      return () => {
+        clearTimeout(timeoutId); // Limpa o timeout ao desmontar o componente
+      };
+    }
+  }, [awbList]);
+
+
+
+  // Dentro da função handleSearch:
   const handleSearch = (fieldName, fieldValue) => {
     // Fazer a consulta ao Firestore
     db.collection("importacoes")
@@ -158,22 +124,66 @@ export default function ImportacaoForm() {
           results.push(doc.data());
         });
 
-        const objectToString = () => {
-          return Object.entries(results[0])
-            .map(([key, value]) => `${key}: ${value}`)
-            .join("\n");
-        };
+        if (results.length === 0) {
+          toast.error("Nenhum resultado encontrado.");
+        } else {
+          // Preencher os campos do formulário com os valores da pesquisa
+          const awbData = results[0];
+          form.setFieldsValue({
+            invoiceNumber: awbData.invoiceNumber,
+            invoiceDate: moment(awbData.invoiceDate),
+            amount: awbData.amount,
+            highPay: moment(awbData.highPay),
+            reduceValue: awbData.reduceValue,
+            lowPay: moment(awbData.lowPay),
+            awb: results[0].awb,
+            description: awbData.description,
+            switchAwb: awbData.switchAwb,
+          });
 
-        // Atualizar o estado com os resultados
-        setSearchResults(objectToString);
-
-        // Abrir o modal
-        setModalVisible(true);
+          // Atualizar o estado com os resultados
+          setSearchResults(awbData);
+        }
       })
       .catch((error) => {
         // Tratar erros, se necessário
         console.error("Erro na consulta ao Firestore:", error);
       });
+  };
+
+  const handleSubmit = async (values) => {
+    console.log("Valores do formulário:", values);
+    try {
+      const formattedValues = {
+        ...values,
+        invoiceDate: moment(values.invoiceDate).format("YYYY-MM-DD"),
+        highPay: moment(values.highPay).format("YYYY-MM-DD"),
+        lowPay: moment(values.lowPay).format("YYYY-MM-DD"),
+        switchAwb: values.switchAwb || false,
+      };
+
+      // Verifica se já existe um documento com o mesmo AWB
+      const existingDoc = await importacoesCollection
+        .where("awb", "==", formattedValues.awb)
+        .get();
+
+      if (existingDoc.docs.length > 0) {
+        // Se um documento com o mesmo AWB existe, atualize-o
+        const docRef = existingDoc.docs[0].ref;
+        await docRef.update(formattedValues);
+        toast.success("Documento atualizado com ID:", docRef.id);
+      } else {
+        // Caso contrário, crie um novo documento
+        const docRef = await importacoesCollection.add(formattedValues);
+        toast.success("Documento criado com ID:", docRef.id);
+      }
+
+      // Limpar o formulário após o envio
+      form.resetFields();
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error("Erro ao salvar no Firestore:", error);
+    }
   };
 
   return (
@@ -192,13 +202,17 @@ export default function ImportacaoForm() {
                     required: true,
                     message: "Please input invoice number!",
                   },
+                  {
+                    pattern: /^[0-9]+$/, // Aceita apenas números inteiros
+                    message: "Invoice number must be a valid integer.",
+                  },
                 ]}
               >
                 <Input
                   onChange={(e) => setSearchInvoiceNumber(e.target.value)}
                 />
-                {console.log(searchInvoiceNumber)}
               </Form.Item>
+
               <Form.Item>
                 <Button
                   type="primary"
@@ -206,7 +220,9 @@ export default function ImportacaoForm() {
                   onClick={() =>
                     handleSearch("invoiceNumber", searchInvoiceNumber)
                   }
-                />
+                >
+                  Pesquisar
+                </Button>
               </Form.Item>
             </div>
             <Form.Item
@@ -298,7 +314,9 @@ export default function ImportacaoForm() {
                   type="primary"
                   icon={<SearchOutlined />}
                   onClick={() => handleSearch("awb", searchAwb)}
-                />
+                >
+                  Pesquisar
+                </Button>
               </Form.Item>
             </div>
             <Form.Item
@@ -343,42 +361,52 @@ export default function ImportacaoForm() {
           </Modal>
         </Col>
         <Col span={12}>
-          <div>
-            <h2>Events</h2>
-            <ul>
-              {awbList[0] &&
-                awbList.map((awb, index) => (
-                  <li key={index}>
-                    <span style={{cursor:'pointer', color:'white'}} onClick={() => { setModalAwb(true); fetchData(); }} id="btnListAwb"> {awb}</span>
+        <div>
+          <h2>Events</h2>
+          <ul>
+            {awbList[0] &&
+              awbList.map((awb, index) => (
+                <li key={index}>
+                  <span
+                    style={{ cursor: "pointer", color: "white" }}
+                    onClick={() => {
+                      setModalAwb(true);
+                      fetchData();
+                    }}
+                    id="btnListAwb"
+                  >
+                    {" "}
+                    {awb}
+                  </span>
+                </li>
+              ))}
 
-                  </li>
-                ))}
+             {!awbList[0] && !showNoActiveAwbMessage && (
+              <div>
+                <Spin />
+              </div>
+            )}
 
-              {!awbList[0] && (
-                <div>
-                  <Spin />
-                </div>
-              )}
-            </ul>
-          </div>
-        </Col>
+            {showNoActiveAwbMessage && <p>Nenhum AWB ativo.</p>}
+          </ul>
+        </div>
+      </Col>
       </div>
       <Modal
-      open={modalAwb}
-      closable={false}
-      footer={
-        <Button onClick={() => setModalAwb(false)}>Ok</Button>
-      }
+        open={modalAwb}
+        closable={false}
+        footer={<Button onClick={() => setModalAwb(false)}>Ok</Button>}
       >
         <ul>
           {console.log("eventsModal: ", events)}
-          {events[0] && (
-              events.map((event, index)=>{
-                return (<li index={index}>{event.timestamp} - {event.description}</li>)
-              })
-              
-          
-          )}
+          {events[0] &&
+            events.map((event, index) => {
+              return (
+                <li index={index}>
+                  {event.timestamp} - {event.description}
+                </li>
+              );
+            })}
           {!events[0] && <Spin></Spin>}
         </ul>
       </Modal>
