@@ -16,6 +16,7 @@ import {
   DatePicker,
   Modal,
   Spin,
+  Table,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -32,7 +33,7 @@ export default function ImportacaoForm() {
   const [awbList, setAwbList] = useState([]);
   const [modalAwb, setModalAwb] = useState(false);
   const [showNoActiveAwbMessage, setShowNoActiveAwbMessage] = useState(false);
-  
+
 
   const db = firebase.firestore();
   const importacoesCollection = db.collection("importacoes");
@@ -44,43 +45,52 @@ export default function ImportacaoForm() {
     const fetchDocuments = async () => {
       try {
         // Fazer a consulta com o filtro switchAwb
-        const querySnapshot = await importacoesCollection
-          .where("switchAwb", "==", true)
-          .get();
+        const querySnapshot = await importacoesCollection.get()
 
         const awbArray = [];
 
         // Iterar sobre os documentos retornados
         querySnapshot.forEach((doc) => {
-          // Obter o valor do campo awb
+          // Obter o valor do campo data
+          awbArray.push({
+            awb: doc.data().awb,
+            description: doc.data().description,
+            amount: doc.data().amount,
+          })
+          toast.info("AWB encontrado!");
 
-          const awb = doc.data().awb;
-          toast.info("AWB encontrados: ", awb); // Aqui você pode fazer o que desejar com o valor do campo awb
-          awbArray.push(awb);
-          setAwbList(awbArray);
         });
+
+        // Definir a matriz awbList após o loop
+        setAwbList(awbArray.reverse());
       } catch (error) {
         toast.error("Erro ao buscar documentos:", error);
-        console.error("Erro ao buscar documentos:", error);
+
       }
     };
 
-    // Chamar a função de busca ao carregar o componente
-    fetchDocuments();
-  }, []);
+    // Verifique se awbList está vazio antes de buscar documentos
+    if (awbList.length === 0) {
+      fetchDocuments();
+    }
+  },[]);
 
-  let options = {
-    method: "GET",
-    url: "https://api-eu.dhl.com/track/shipments",
-    params: { trackingNumber: awbList[0] },
-    headers: { "DHL-API-Key": "0QPbSWdBwP0m9laLl6VOdaEDvtJuhSwP" },
-  };
+
+
+  
 
   // useEffect(() => {
-  const fetchData = async () => {
+  const fetchData = async (awb) => {
+    let options = {
+      method: "GET",
+      url: "https://api-eu.dhl.com/track/shipments",
+      params: { trackingNumber: awb },
+      headers: { "DHL-API-Key": "0QPbSWdBwP0m9laLl6VOdaEDvtJuhSwP" },
+    };
+
     try {
       await axios.request(options).then(function (response) {
-        console.log("response.data: ", response.data);
+        // console.log("response.data: ", response.data);
         const eventsData = response.data.shipments[0].events;
 
         // Verifica se eventsData é uma matriz vazia
@@ -91,12 +101,13 @@ export default function ImportacaoForm() {
         }
       });
     } catch (error) {
-      toast.error("Error fetching events:", error);
+      toast.error("Error fetching events:", error.message);
+      console.log("Error fetching events:", error);
     }
   };
 
 
-    useEffect(() => {
+  useEffect(() => {
     if (!awbList[0]) {
       // Se a lista awbList estiver vazia, defina showNoActiveAwbMessage como true após 5 segundos
       const timeoutId = setTimeout(() => {
@@ -147,12 +158,12 @@ export default function ImportacaoForm() {
       })
       .catch((error) => {
         // Tratar erros, se necessário
-        console.error("Erro na consulta ao Firestore:", error);
+        toast.error("Erro na consulta ao Firestore:", error);
       });
   };
 
   const handleSubmit = async (values) => {
-    console.log("Valores do formulário:", values);
+    toast.error("Valores do formulário:", values);
     try {
       const formattedValues = {
         ...values,
@@ -181,10 +192,43 @@ export default function ImportacaoForm() {
       // Limpar o formulário após o envio
       form.resetFields();
     } catch (error) {
-      console.log("Error: ", error);
       toast.error("Erro ao salvar no Firestore:", error);
     }
   };
+
+
+
+
+
+  const columns = [
+    {
+      title: 'Awb',
+      dataIndex: 'awb',
+      key: 'awb',
+      render: (text, record) => (
+        <a href="#" onClick={() => fetchData(record.awb)}>
+          {text}
+        </a>
+      ),
+    },
+    {
+      title: 'Descrição',
+      dataIndex: 'description',
+      key: 'description',
+    },
+    {
+      title: 'Valor',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (text) => (
+        new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(text)
+      ),
+    },
+  ];
+
 
   return (
     <div className="conteiner">
@@ -341,7 +385,6 @@ export default function ImportacaoForm() {
             </Button>
           </Form>
 
-          {/* </div> */}
 
           <Modal
             className="modalImportacao"
@@ -360,37 +403,26 @@ export default function ImportacaoForm() {
             <TextArea rows={7} value={searchResults} />
           </Modal>
         </Col>
-        <Col span={12}>
-        <div>
-          <h2>Events</h2>
-          <ul>
-            {awbList[0] &&
-              awbList.map((awb, index) => (
-                <li key={index}>
-                  <span
-                    style={{ cursor: "pointer", color: "white" }}
-                    onClick={() => {
-                      setModalAwb(true);
-                      fetchData();
-                    }}
-                    id="btnListAwb"
-                  >
-                    {" "}
-                    {awb}
-                  </span>
-                </li>
-              ))}
+        <Col span={12}>              
 
-             {!awbList[0] && !showNoActiveAwbMessage && (
-              <div>
-                <Spin />
-              </div>
-            )}
+            <div id="table">
 
-            {showNoActiveAwbMessage && <p>Nenhum AWB ativo.</p>}
-          </ul>
-        </div>
-      </Col>
+              {awbList[0] ? (
+              <Table
+                dataSource={awbList}
+                columns={columns}
+              />
+               ) : !showNoActiveAwbMessage ? (
+                <div>
+                  <Spin />
+                </div>
+              ) : (
+                <p>Nenhum AWB ativo.</p>
+              )} 
+            </div>          
+
+          
+        </Col>
       </div>
       <Modal
         open={modalAwb}
@@ -398,7 +430,7 @@ export default function ImportacaoForm() {
         footer={<Button onClick={() => setModalAwb(false)}>Ok</Button>}
       >
         <ul>
-          {console.log("eventsModal: ", events)}
+
           {events[0] &&
             events.map((event, index) => {
               return (

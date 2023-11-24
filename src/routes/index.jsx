@@ -6,6 +6,7 @@ import PartsTable from '../Pages/PartsTable';
 import ImportacaoForm from '../Pages/Importacao';
 import EANGenerator from '../Pages/Ean';
 import Route from './Route';
+import ComissaoPage from "../Pages/Comissoes";
 
 
 
@@ -20,6 +21,7 @@ export default function Routes(){
             <Route exact path = '/calculadoras' component={Calculasdoras} isPrivate />
             <Route exact path = '/partsTable' component={PartsTable} isPrivate />
             <Route exact path = '/ean' component={EANGenerator} isPrivate />
+            <Route exact path = '/comissoes' component={ComissaoPage} isPrivate />
         </Switch>
     )
 }

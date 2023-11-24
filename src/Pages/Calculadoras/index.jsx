@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import firebase from "../../Services/firebaseConnection";
-import { InputNumber, Form, Button, Row, Col, Card, Modal } from "antd";
+import { InputNumber, Form, Button, Row, Col, Card, Modal, Input, DatePicker } from "antd";
 import { SettingFilled } from "@ant-design/icons";
 import "./calculadoras.css";
 import HeaderPages from "../../Components/Headers";
@@ -9,11 +9,15 @@ import "react-toastify/dist/ReactToastify.css";
 import { MoedaContext } from "../../Contexts/moeda";
 
 import { Table } from "antd";
+import Item from "antd/lib/list/Item";
 
 export default function Calculadora() {
   const { moeda } = useContext(MoedaContext);
 
   // const { moeda } = useContext(MoedaContext)
+  const [item, setItem] = useState("");
+  const [cliente, setCliente] = useState("");
+  const [date, setDate] = useState();
   const [precoReal, setPrecoReal] = useState();
   const [precoInvoice, setPrecoInvoice] = useState();
   const [frete, setFrete] = useState();
@@ -107,7 +111,7 @@ export default function Calculadora() {
       });
   }
 
-  function calcular(precoReal, precoInvoice, freteUsd) {
+  function calcular(precoReal, precoInvoice, freteUsd, cliente, item, date) {
     // colocar os dados de taxas no banco de dados
     const taxAlibaba = initialValues.taxAlibaba;
     const taxaImportacao = initialValues.importTax;
@@ -145,6 +149,9 @@ export default function Calculadora() {
 
     const costValue = [
       {
+        cliente: cliente.toString(),
+        item: item,
+        date: date.format("DD/MM/YYYY").toString(),
         custoTaxImport: custoTaxaImportacao && custoTaxaImportacao.toFixed(2),
         custoTaxaIcms: custoTaxaIcms && custoTaxaIcms.toFixed(2),
         custoTaxaIof: custoTaxaIof && custoTaxaIof.toFixed(2),
@@ -155,13 +162,32 @@ export default function Calculadora() {
       },
     ];
 
+    
+
     setCustosImportacao((prevCustosImportacao) =>
       prevCustosImportacao.concat(costValue)
     );
+    console.log("Cliente: " + cliente.toString())
+    console.log("item: " + item)
   }
   const respostaPorcentagemValor = ((venda - compra) / compra) * 100;
 
   const columns = [
+    {
+      title: "Cliente",
+      dataIndex: "cliente",
+      key: "cliente", 
+    },
+    {
+      title: "Item",
+      dataIndex: "item",
+      key: "item",
+    },
+    {
+      title: "Data",
+      dataIndex: "date",
+      key: "date",
+    },
     {
       title: "CUST. TAXA IMPORT. (R$)",
       dataIndex: "custoTaxImport",
@@ -198,11 +224,22 @@ export default function Calculadora() {
     <div>
       <HeaderPages />
       <div className=".conteiner-calc">
-        <Row className="row-calc">
+        <Row>
+        <Col span={8}>
+        {/* <Row className="row-calc"> */}
           <Card className="card-calc">
             <Col span={12}>
               <h1> CALCULADORA DE IMPORTAÇÃO</h1>
               <Form {...layout}>
+                <Form.Item label={"Item"}>
+                  <Input  onChange={(e) => setItem(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={"Cliente"}>
+                  <Input onChange={(e) => setCliente(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={"Data"}>
+                  <DatePicker format={"DD-MM-YYYY"} onChange={(e) => setDate(e)} />
+                </Form.Item>
                 <Form.Item label={"$ REAL(USD)"}>
                   <InputNumber min={0} onChange={(e) => setPrecoReal(e)} />
                 </Form.Item>
@@ -216,7 +253,7 @@ export default function Calculadora() {
               <div id="div-btns-calc-import">
                 <Button
                   className="btn-calc-import"
-                  onClick={() => calcular(precoReal, precoInvoice, frete)}
+                  onClick={() => calcular(precoReal, precoInvoice, frete, cliente, item, date)}
                 >
                   CALCULAR
                 </Button>
@@ -252,9 +289,11 @@ export default function Calculadora() {
               </Form>
             </Col>
           </Card>
-        </Row>
+        {/* </Row> */}
+        </Col>
 
-        <Row className="row-calc">
+        <Col span={16}>
+        {/* <Row className="row-calc"> */}
           <Table
             className="table"
             scroll={true}
@@ -263,6 +302,8 @@ export default function Calculadora() {
             dataSource={[...custosImportacao]}
             columns={columns}
           />
+        {/* </Row> */}
+        </Col>
         </Row>
       </div>
 

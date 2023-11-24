@@ -44,6 +44,11 @@ export default function HeaderPages() {
                 EAN
               </Link>
             </Menu.Item>
+            <Menu.Item className="menu-item" key="6">
+              <Link className="link-menu" to="/comissoes">
+                Comissões
+              </Link>
+            </Menu.Item>
           </Menu>
         </Col>
         <Col span={8}>
