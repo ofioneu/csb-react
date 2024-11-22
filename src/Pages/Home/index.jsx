@@ -123,6 +123,8 @@ export default function Home() {
                     <li>{legalData[0].corporateName}</li>
                     <li>{legalData[0].adress}</li>
                     <li>{legalData[0].cep}</li>
+                    <li>{legalData[0].adress2}</li>
+                    <li>{legalData[0].cep2}</li>
                     <li>{legalData[0].cnpj}</li>
                     <li>{legalData[0].ie}</li>
                   </ul>
