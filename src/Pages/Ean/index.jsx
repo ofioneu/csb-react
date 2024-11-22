@@ -3,7 +3,7 @@ import HeaderPages from "../../Components/Headers";
 import { Form, Button, Input, Typography  } from "antd";
 import './ean.css'
 
-const { TextArea } = Input;
+//const { TextArea } = Input;
 
 export default function EANGenerator() {
   const [countryCode, setCountryCode] = useState("");
