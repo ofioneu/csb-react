@@ -12,7 +12,7 @@ import {
   Button,
   Switch,
   Col,
-  Card,
+  //Card,
   DatePicker,
   Modal,
   Spin,
@@ -70,7 +70,7 @@ export default function ImportacaoForm() {
 
     // Chamar a função de busca ao carregar o componente
     fetchDocuments();
-  }, []);
+  }, [importacoesCollection]);
 
 
   let options = {

@@ -55,7 +55,7 @@ export default function Home() {
 
     // Chame a função para buscar os documentos da coleção
     fetchDocuments();
-  }, []);
+  }, [db]);
 
   //função copiar texto do card
   function copy(idKey) {

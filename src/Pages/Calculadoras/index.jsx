@@ -71,7 +71,7 @@ export default function Calculadora() {
     }
 
     getTax();
-  }, []);
+  }, [db]);
 
   const initialValues = {
     aliquota: configTaxBd[0] && configTaxBd[0].aliquota,
